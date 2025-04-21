@@ -312,7 +312,7 @@ Matrix QR(Matrix X)
     
     int i,j;
 
-    for (i = 0; i < X.m; i++) {
+    for (i = 0; i < X.m - 1; i++) {
         Matrix temp0 = {X.m - i, 1};
         temp0.matrix = initialize_matrix(temp0.m, temp0.n);
         
@@ -341,6 +341,31 @@ Matrix QR(Matrix X)
         }
     }
     return joint(gauss_jordan(H), R);
+}
+
+Matrix QR_repeat(Matrix X, int n)
+{
+    Matrix Q = {X.m, X.n};
+    Q.matrix = initialize_matrix(Q.m, Q.n);
+    Matrix R = {X.m, X.n};
+    R.matrix = initialize_matrix(R.m, R.n);
+    Matrix Y = X;
+    Matrix Temp_QR;
+    int i, j, k;
+    for (i = 0; i < n; i++) {
+        Temp_QR = QR(Y);
+        for (j = 0; j < Temp_QR.m; j++) {
+            for (k = 0; k < Temp_QR.n; k++) {
+                if (k < Temp_QR.n / 2) {
+                    Q.matrix[j][k] = Temp_QR.matrix[j][k];
+                } else {
+                    R.matrix[j][k - Temp_QR.n / 2] = Temp_QR.matrix[j][k];
+                }
+            }
+        }
+        Y = times(R, Q);
+    }
+    return Y;
 }
 
 

@@ -24,6 +24,8 @@ Matrix LU(Matrix X);
 Matrix transe(Matrix X);
 Matrix House(Matrix X);
 Matrix QR(Matrix X);
+Matrix dissenbly(Matrix X);
+Matrix QR_repeat(Matrix X, int n);
 double inner(Matrix X, Matrix Y);
 double det(Matrix X);
 double tr(Matrix X);
