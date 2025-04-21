@@ -195,7 +195,7 @@ Matrix LU(Matrix X)
                 }
             } else if (i > j) {
                 sum = 0;
-                for (k = 0; k < j - 1; k++) {
+                for (k = 0; k < j; k++) {
                     sum += L.matrix[i][k] * U.matrix[k][j];
                 }
                 L.matrix[i][j] = (X.matrix[i][j] - sum) / U.matrix[j][j];
@@ -220,6 +220,26 @@ Matrix LU(Matrix X)
 
     Matrix result = joint(L, U);
     return result;
+}
+
+double det(Matrix X)
+{
+    Matrix lu = LU(X);
+    double det = 1;
+    int i;
+    for (i = 0; i < X.n; i++) {
+        det *= lu.matrix[i][i + X.n];
+    }
+    return det;
+}
+
+double tr(Matrix X) {
+    double tr = 0;
+    int i;
+    for (i = 0; i < X.n; i++) {
+        tr += X.matrix[i][i];
+    }
+    return tr;
 }
 void show_matrix(Matrix X)
 {

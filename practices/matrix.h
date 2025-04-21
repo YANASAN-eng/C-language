@@ -19,9 +19,10 @@ Matrix unit(int n);
 Matrix joint(Matrix X, Matrix Y);
 Matrix gauss_jordan(Matrix X);
 Matrix LU(Matrix X);
-double norm(Matrix X);
-double tr(Matrix X);
 double det(Matrix X);
+double tr(Matrix X);
+double norm(Matrix X);
+
 void show_matrix(Matrix X);
 
 #endif
