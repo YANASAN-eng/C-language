@@ -2,6 +2,7 @@
 #define COMPLEX_H_
 
 #include <math.h>
+#include <stdio.h>
 
 // 複素数
 typedef struct Complex {
@@ -10,13 +11,20 @@ typedef struct Complex {
 } Complex;
 
 // 和
-Complex add(Complex, Complex);
+Complex complex_add(Complex, Complex);
 // 差
-Complex minus(Complex, Complex);
+Complex complex_minus(Complex, Complex);
 // 積
-Complex times(Complex, Complex);
+Complex complex_times(Complex, Complex);
 // 共役
-Complex conjugate(Complex);
+Complex complex_conjugate(Complex);
+// 商
+Complex complex_div(Complex, Complex);
 // ノルム
-double norm(Complex);
+double complex_norm(Complex);
+// スカラー積
+Complex complex_scalar(double a, Complex z);
+// 逆数
+Complex complex_reciprocal(Complex c);
+void show_complex(Complex);
 #endif
