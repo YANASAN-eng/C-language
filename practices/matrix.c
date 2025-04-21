@@ -64,6 +64,19 @@ Matrix times(Matrix X, Matrix Y)
     return Z;
 }
 
+Matrix scalar(double a, Matrix X)
+{
+    Matrix Z = X;
+    int i,j;
+
+    for (i = 0; i < Z.m; i++) {
+        for (j = 0; j < Z.n; j++) {
+            Z.matrix[i][j] *= a;
+        }
+    }
+    return Z;
+}
+
 Matrix direct_sum(Matrix X, Matrix Y)
 {
     Matrix Z = {X.m + Y.m, X.n + Y.n};
@@ -241,6 +254,96 @@ double tr(Matrix X) {
     }
     return tr;
 }
+
+double norm(Matrix X)
+{
+    int i,j;
+    double sum = 0;
+    for (i = 0; i < X.m; i++) {
+        for (j = 0; j < X.n; j++) {
+            sum += X.matrix[i][j] * X.matrix[i][j];
+        }
+    }
+    return sqrt(sum);
+}
+
+double inner(Matrix X, Matrix Y)
+{
+    double sum = 0;
+    int i;
+    for (i = 0; i < X.m; i++) {
+        sum += X.matrix[i][0] * Y.matrix[i][0];
+    }
+    return sum;
+}
+
+Matrix transe(Matrix X)
+{
+    Matrix Z = {X.n, X.m};
+    Z.matrix = initialize_matrix(Z.m, Z.n);
+
+    int i,j;
+    for (i = 0; i < Z.m; i++) {
+        for (j = 0; j < Z.n; j++) {
+            Z.matrix[i][j] = X.matrix[j][i];
+        }
+    }
+    return Z;
+}
+
+Matrix House(Matrix X)
+{
+    Matrix H = {X.m, X.m};
+    H.matrix = initialize_matrix(H.m, H.n);
+    Matrix E = unit(H.m);
+
+    H = minus(E, scalar(2 / inner(X, X), times(X, transe(X))));
+
+    return H;
+}
+
+Matrix QR(Matrix X)
+{
+    Matrix R = X;
+    Matrix H = unit(X.m);
+    Matrix Temp = {X.m, X.n};
+    Temp.matrix = initialize_matrix(Temp.m, Temp.n);
+    Matrix E;
+    
+    int i,j;
+
+    for (i = 0; i < X.m; i++) {
+        Matrix temp0 = {X.m - i, 1};
+        temp0.matrix = initialize_matrix(temp0.m, temp0.n);
+        
+        Matrix temp1 = {X.m - i, 1};
+        temp1.matrix = initialize_matrix(temp1.m, temp1.n);
+        
+        for (j = i; j < X.n; j++) {
+            temp0.matrix[j - i][0] = R.matrix[j][i];
+        }
+        for (j = i; j < X.n; j++) {
+            if (j == i) {
+                temp1.matrix[j - i][0] = norm(temp0); 
+            } else {
+                temp1.matrix[j - i][0] = 0;
+            }
+        }
+        if (i == 0) {
+            Temp = House(minus(temp0, temp1));
+            H = Temp;
+            R = times(H, R);
+        } else {
+            E = unit(i);
+            Temp = direct_sum(E,House(minus(temp0, temp1)));
+            R = times(Temp, R);
+            H = times(Temp, H);
+        }
+    }
+    return joint(gauss_jordan(H), R);
+}
+
+
 void show_matrix(Matrix X)
 {
     int i, j;

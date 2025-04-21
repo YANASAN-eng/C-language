@@ -5,26 +5,40 @@
 int main()
 {
     Matrix X = {3, 3};
-
-    Matrix Z;
+    Matrix H;
     
     X.matrix = initialize_matrix(X.m, X.n);
 
     X.matrix[0][0] = 1;
-    X.matrix[0][1] = 4;
-    X.matrix[0][2] = 6;
-    X.matrix[1][0] = 2;
-    X.matrix[1][1] = 10;
-    X.matrix[1][2] = 17;
-    X.matrix[2][0] = 3;
-    X.matrix[2][1] = 16;
-    X.matrix[2][2] = 31;
+    X.matrix[0][1] = 1;
+    X.matrix[0][2] = 0;
+    X.matrix[1][0] = 1;
+    X.matrix[1][1] = 0;
+    X.matrix[1][2] = 1;
+    X.matrix[2][0] = 0;
+    X.matrix[2][1] = 1;
+    X.matrix[2][2] = 1;
 
-    Z = LU(X);
-    show_matrix(Z);
 
-    printf("detX=%f\n", det(X));
-    printf("trX=%f\n", tr(X));
+    Matrix Test = QR(X);
 
+    Matrix Q = {3, 3};
+    Matrix R = {3, 3};
+    Q.matrix = initialize_matrix(Q.m, Q.n);
+    R.matrix = initialize_matrix(R.m, R.n);
+
+    int i, j;
+    for (i = 0; i < Test.m; i++) {
+        for (j = 0; j < Test.n; j++) {
+            if (j < Test. n / 2) {
+                Q.matrix[i][j] = Test.matrix[i][j];
+            } else {
+                R.matrix[i][j - Test.n / 2] = Test.matrix[i][j];
+            }
+        }
+    }
+    
+    show_matrix(Test);
+    show_matrix(times(Q, R));
     return 0;
 }

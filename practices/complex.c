@@ -24,3 +24,16 @@ Complex times(Complex z1, Complex z2)
     z3.y = z1.x * z2.y + z2.y * z1.x;
     return z3;
 }
+// 共役
+Complex conjugate(Complex z)
+{
+    Complex w = {0, 0};
+    w.x = z.x;
+    w.y = -w.y;
+    return w
+}
+// ノルム
+double norm(Complex z)
+{
+    return sqrt(z.x * z.x + z.y * z.y);
+}
