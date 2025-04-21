@@ -1,18 +1,24 @@
 #include <stdio.h>
-#include "functions.h"
-#include "newton.h"
+
+#include "matrix.h"
 
 int main()
 {
-    double x = 5;
-    double coeffs[] = {-2, 0, 1};
-    Polynomial poly = make_polynomial(3, coeffs);
+    Matrix X = {2, 2};
 
-    // 多項式に対してNewton法を実行する。
-    // double result = differentiation(poly, poly.eval, x, 0.001);
-    double result = newton_method(poly, poly.eval, x, 100, 0.000000001);
+    Matrix Z;
+    
+    X.matrix = initialize_matrix(X.m, X.n);
 
-    printf("%f\n", poly.eval(x, &poly));
-    printf("√2=%f\n", result);
+    X.matrix[0][0] = 1;
+    X.matrix[0][1] = 2;
+    X.matrix[1][0] = 3;
+    X.matrix[1][1] = 4;
+
+    Z = LU(X);
+    show_matrix(Z);
+
+    printf("%d\n", Z.n);
+
     return 0;
 }
