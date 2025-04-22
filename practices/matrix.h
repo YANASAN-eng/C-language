@@ -27,10 +27,12 @@ Matrix House(Matrix X);
 Matrix QR(Matrix X);
 Matrix dissenbly(Matrix X);
 Matrix QR_repeat(Matrix X, int n);
+Matrix echelon_form(Matrix X);
 double inner(Matrix X, Matrix Y);
 double det(Matrix X);
 double tr(Matrix X);
 double norm(Matrix X);
+int range(Matrix X);
 
 void show_matrix(Matrix X);
 

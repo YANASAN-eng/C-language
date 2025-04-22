@@ -121,20 +121,32 @@ Matrix unit(int n)
 
 Matrix joint(Matrix X, Matrix Y)
 {
-    Matrix Z = {X.m, X.n + Y.n};
-    Z.matrix = initialize_matrix(Z.m, Z.n);
+    Matrix Z;
     
     int i,j;
 
-    for (i = 0; i < Z.m; i++) {
-        for (j = 0; j < Z.n; j++) {
-            if (j < X.n) {
-                Z.matrix[i][j] = X.matrix[i][j];
-            } else {
-                Z.matrix[i][j] = Y.matrix[i][j-X.n];
+    if (X.m != 0 && X.n != 0 && Y.m != 0 && Y.n != 0) {
+        Z = (Matrix){X.m, X.n + Y.n};
+        Z.matrix = initialize_matrix(Z.m, Z.n);
+        for (i = 0; i < Z.m; i++) {
+            for (j = 0; j < Z.n; j++) {
+                if (j < X.n) {
+                    Z.matrix[i][j] = X.matrix[i][j];
+                } else {
+                    Z.matrix[i][j] = Y.matrix[i][j-X.n];
+                }
             }
         }
+    } else if (X.m != 0 && X.n != 0 && Y.m == 0 && Y.n == 0){
+        Z = (Matrix){X.m, X.n};
+        Z.matrix = initialize_matrix(Z.m, Z.n);
+        Z = X;
+    } else if (X.m == 0 && X.n == 0 && Y.m != 0 && Y.n != 0) {
+        Z = (Matrix){Y.m, Y.n};
+        Z.matrix = initialize_matrix(Z.m, Z.n);
+        Z = Y;
     }
+
     return Z;
 }
 
@@ -379,7 +391,108 @@ Matrix QR_repeat(Matrix X, int n)
     }
     return Y;
 }
+int range(Matrix X)
+{
+    int r = 0;
+    if (X.m <= X.n) {
+        r = X.m;
+    } else {
+        r = X.n;
+    }
+    return r;
+}
 
+Matrix echelon_form(Matrix X)
+{
+    Matrix Z = X;
+    int delta = 0; 
+    bool flag = true;
+    int r = range(X);
+
+    int i,j,k;
+    for (i = 0; i < r; i++) {
+        if (Z.matrix[i - delta][i].x == 0 && Z.matrix[i - delta][i].y == 0) {
+            for (j = i + 1 - delta; j < Z.m; j++) {
+                if (Z.matrix[j][i].x != 0 || Z.matrix[j][i].y != 0) {
+                    Complex *temp = malloc(sizeof(Complex) * Z.n);
+                    for (k = 0; k < Z.n; k++) {
+                        temp[k] = Z.matrix[i -delta][k];
+                    }
+                    for (k = 0; k < Z.n; k++) {
+                        Z.matrix[i - delta][k] = Z.matrix[j][k];
+                        Z.matrix[j][k] = temp[k]; 
+                    }
+                    break;
+                }
+                if (j == Z.m - 1) {
+                    flag = false;
+                    delta += 1;
+                }
+            }
+        }
+        if (flag) {
+            Complex temp = Z.matrix[i - delta][i];
+            for (k = 0; k < Z.n; k++) {
+                Z.matrix[i - delta][k] = complex_div(Z.matrix[i - delta][k], temp);
+            }
+            for (j = 0; j < Z.m; j++) {
+                temp = Z.matrix[j][i];
+                for (k = 0; k < Z.n; k++) {
+                    if (j != i - delta) {
+                        Z.matrix[j][k] = complex_minus(Z.matrix[j][k], complex_times(temp, Z.matrix[i - delta][k]));
+                    }
+                }
+            }
+        } else {
+            flag = true;
+        }
+    }
+    return Z;
+}
+
+Matrix Ker(Matrix X)
+{
+    Matrix b, B, Y;
+    Y = echelon_form(X);
+    B = (Matrix){0, 0};
+    b = (Matrix){Y.n, 1};
+    b.matrix = initialize_matrix(b.m, b.n);
+    int temp[range(X)];
+    int i, j, k, delta;
+
+    delta = 0;
+
+    for (i = 0; i < range(X); i++) {
+        temp[i] = -1;
+    }
+
+    for (j = 0; j < Y.n; j++) {    
+        for (i = j - delta; i < Y.m; i++) {
+            if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+                temp[j] = i;
+                break;
+            } else if (i == Y.m -1) {
+                delta += 1;
+            }
+        }
+    }
+
+    for (j = 0; j < Y.n; j++) {
+        if (temp[j] == -1) {
+            for (i = 0; i < Y.n; i++) {
+                if (j == i) {
+                    b.matrix[i][0] = (Complex){1,0};
+                } else if (temp[i] != -1 && i <= j) {
+                    b.matrix[i][0] = complex_scalar(-1, complex_div(Y.matrix[i][j], Y.matrix[i][temp[i]]));
+                } else {
+                    b.matrix[i][0] = (Complex){0, 0};
+                }
+            }
+            B = joint(B, b);
+        }
+    }
+    return B;
+}
 
 void show_matrix(Matrix X)
 {

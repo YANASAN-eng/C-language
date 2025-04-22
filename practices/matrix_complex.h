@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h> 
+#include <stdbool.h>
 #include "complex.h"
 
 typedef struct Matrix {
@@ -28,10 +29,13 @@ Matrix QR(Matrix X);
 Matrix dissenbly(Matrix X);
 Matrix QR_repeat(Matrix X, int n);
 Matrix dagger(Matrix X);
+Matrix echelon_form(Matrix X);
+Matrix Ker(Matrix X);
 Complex inner(Matrix X, Matrix Y);
 Complex det(Matrix X);
 Complex tr(Matrix X);
 Complex norm(Matrix X);
+int range(Matrix X);
 
 void show_matrix(Matrix X);
 

@@ -369,6 +369,53 @@ Matrix QR_repeat(Matrix X, int n)
 }
 
 
+Matrix echelon_form(Matrix X)
+{
+    Matrix Z = X;
+    int delta = 0; 
+    bool flag = true:
+
+    int i,j,k;
+    for (i = 0; i < Z.m; i++) {
+        if (Z.matrix[i][i] == 0) {
+            for (j = i + 1; j < Z.m; j++) {
+                if (Z.matrix[j][i] != 0) {
+                    double *temp = malloc(sizeof(double) * Z.n);
+                    for (k = 0; k < Z.n; k++) {
+                        temp[k] = Z.matrix[i][k];
+                    }
+                    for (k = 0; k < Z.n; k++) {
+                        Z.matrix[i][k] = Z.matrix[j][k];
+                        Z.matrix[j][k] = temp[k]; 
+                    }
+                    break;
+                }
+                if (j == Z.m - 1) {
+                    flag = false;
+                    delta += 1;
+                }
+            }
+        }
+        if (flag) {
+            double temp = Z.matrix[i - delta][i];
+            for (k = 0; k < Z.n; k++) {
+                Z.matrix[i - delta][k] = Z.matrix[i - delta][k] / temp;
+            }
+            for (j = 0; j < Z.m; j++) {
+                temp = Z.matrix[j][i];
+                for (k = 0; k < Z.n; k++) {
+                    if (j != i) {
+                        Z.matrix[j][k] -= temp * Z.matrix[i][k];
+                    }
+                }
+            }
+        } else {
+            flag = true;
+        }
+    }
+    return Z;
+}
+
 void show_matrix(Matrix X)
 {
     int i, j;
