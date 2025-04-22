@@ -12,13 +12,13 @@ int main()
 
     X.matrix[0][0] = (Complex){1, 0};
     X.matrix[0][1] = (Complex){2, 0};
-    X.matrix[0][2] = (Complex){2, 0};
-    X.matrix[1][0] = (Complex){2, 0};
-    X.matrix[1][1] = (Complex){3, 0};
-    X.matrix[1][2] = (Complex){4, 0};
-    X.matrix[2][0] = (Complex){-1, 0};
-    X.matrix[2][1] = (Complex){-1, 0};
-    X.matrix[2][2] = (Complex){-2, 0};
+    X.matrix[0][2] = (Complex){-3, 0};
+    X.matrix[1][0] = (Complex){1, 0};
+    X.matrix[1][1] = (Complex){2, 0};
+    X.matrix[1][2] = (Complex){-3, 0};
+    X.matrix[2][0] = (Complex){1, 0};
+    X.matrix[2][1] = (Complex){2, 0};
+    X.matrix[2][2] = (Complex){-3, 0};
 
     // Matrix Test = QR(X);
 
@@ -45,14 +45,18 @@ int main()
     // printf("--------------------------------------------------\n");
     // show_matrix(House(X));
     // printf("--------------------------------------------------\n");
-    show_matrix(QR_repeat(X, 100));
-    printf("--------------------------------------------------\n");
+    // show_matrix(QR_repeat(X, 10000));
+    // printf("--------------------------------------------------\n");
     // show_matrix(echelon_form(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(X);
-    // printf("--------------------------------------------------\n");
-    show_spaces(general_eigenspace(X, (Complex){3, 0}));
+    printf("--------------------------------------------------\n");
+    show_matrix(Ker(X));
+    printf("--------------------------------------------------\n");
+    show_matrix(projection(Ker(X)));
+    printf("--------------------------------------------------\n");
+    show_matrix(echelon_form(projection(Ker(X))));
     return 0;
 }

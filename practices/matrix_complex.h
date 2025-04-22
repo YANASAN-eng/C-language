@@ -37,13 +37,15 @@ Matrix dagger(Matrix X);
 Matrix echelon_form(Matrix X);
 Matrix Ker(Matrix X);
 Matrix eigenspace(Matrix X, Complex lambda);
+Matrix projection(Matrix B);
+Matrix Im(Matrix X);
+Spaces complement(Spaces S);
 Spaces general_eigenspace(Matrix X, Complex lambda);
 Complex inner(Matrix X, Matrix Y);
 Complex det(Matrix X);
 Complex tr(Matrix X);
 Complex norm(Matrix X);
 int range(Matrix X);
-
 void show_matrix(Matrix X);
 void show_spaces(Spaces S);
 

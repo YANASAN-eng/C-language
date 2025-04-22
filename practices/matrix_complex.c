@@ -1,5 +1,7 @@
 #include "matrix_complex.h"
 
+#define THRESHOLD 1e-10
+
 Complex** initialize_matrix(int m, int n)
 {
     int i;
@@ -431,12 +433,11 @@ int range(Matrix X)
 
 Matrix echelon_form(Matrix X)
 {
-    Matrix Z = { X.m, X.n };
+    Matrix Z = {X.m, X.n};
     Z.matrix = initialize_matrix(Z.m, Z.n);
 
-    int delta = 0; 
+    int row = 0; 
     bool flag = true;
-    int r = range(X);
 
     int i,j,k;
     for (i = 0; i < X.m; i++) {
@@ -445,39 +446,43 @@ Matrix echelon_form(Matrix X)
         }
     }
 
-    for (i = 0; i < r - 1; i++) {
-        if (Z.matrix[i - delta][i].x == 0 && Z.matrix[i - delta][i].y == 0) {
-            for (j = i + 1 - delta; j < Z.m; j++) {
-                if (Z.matrix[j][i].x != 0 || Z.matrix[j][i].y != 0) {
+    for (i = 0; i < Z.n; i++) {
+        if (Z.matrix[row][i].x == 0 && Z.matrix[row][i].y == 0) {
+            for (j = row; j < Z.m; j++) {
+                if (!(fabsf(Z.matrix[j][i].x) < THRESHOLD) || !(fabsf(Z.matrix[j][i].y) < THRESHOLD)) {
                     Complex *temp = malloc(sizeof(Complex) * Z.n);
                     for (k = 0; k < Z.n; k++) {
-                        temp[k] = Z.matrix[i -delta][k];
+                        temp[k] = Z.matrix[row][k];
                     }
                     for (k = 0; k < Z.n; k++) {
-                        Z.matrix[i - delta][k] = Z.matrix[j][k];
-                        Z.matrix[j][k] = temp[k]; 
+                        Z.matrix[row][k] = Z.matrix[j][k];
+                        Z.matrix[j][k] = temp[k];
                     }
                     break;
-                }
-                if (j == Z.m - 1) {
+                } else if (j == Z.m - 1){
                     flag = false;
-                    delta += 1;
                 }
             }
         }
         if (flag) {
-            Complex temp = Z.matrix[i - delta][i];
-            for (k = 0; k < Z.n; k++) {
-                Z.matrix[i - delta][k] = complex_div(Z.matrix[i - delta][k], temp);
-            }
-            for (j = 0; j < Z.m; j++) {
-                temp = Z.matrix[j][i];
+            Complex temp = Z.matrix[row][i];
+            if (fabsf(temp.x) < THRESHOLD && fabsf(temp.y) < THRESHOLD) {
+                break;
+            } else {
                 for (k = 0; k < Z.n; k++) {
-                    if (j != i - delta) {
-                        Z.matrix[j][k] = complex_minus(Z.matrix[j][k], complex_times(temp, Z.matrix[i - delta][k]));
+                    Z.matrix[row][k] = complex_div(Z.matrix[row][k], temp);
+                    
+                }
+                for (j = 0; j < Z.m; j++) {
+                    temp = Z.matrix[j][i];
+                    if (j != row) {
+                        for (k = 0; k < Z.n; k++) {
+                            Z.matrix[j][k] = complex_minus(Z.matrix[j][k], complex_times(temp, Z.matrix[row][k]));
+                        }
                     }
                 }
             }
+            row += 1;
         } else {
             flag = true;
         }
@@ -540,7 +545,7 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
     int N = 0;
     bool flag = false;
     Matrix Y = minus(X, scalar(lambda, unit(X.m)));
-    int i,j;
+    int i, j, k;
     for (i = 0; i < Y.m; i++) {
         for (j = 0; j < Y.n; j++) {
             if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
@@ -549,13 +554,9 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
             }
         }
     }
-    show_matrix(Y);
-    printf("--------------------------------------------------\n");
     while(flag && N < X.m) {
         flag = false;
         Y = times(Y, Y);
-        show_matrix(Y);
-        printf("--------------------------------------------------\n");
         N += 1;
         for (i = 0; i < Y.m; i++) {
             for (j = 0; j < Y.n; j++) {
@@ -566,15 +567,88 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
             }
         }
     }
-    Spaces S = {N - 1};
-    S.spaces = malloc(sizeof(Matrix) * (N -1));
+    Spaces S = {N};
+    S.spaces = malloc(sizeof(Matrix) * N);
 
     Y = minus(X, scalar(lambda ,unit(X.m)));
-    for (i = 0; i < N - 1; i++) {
-        S.spaces[i] = Ker(Y);
+    for (i = 0; i < N; i++) {
+        S.spaces[i] = (Matrix){Ker(Y).m, Ker(Y).n};
+        S.spaces[i].matrix = initialize_matrix(Ker(Y).m, Ker(Y).n);
+        for(j = 0; j < Ker(Y).m; j++) {
+            for (k = 0; k < Ker(Y).n; k++) {
+                S.spaces[i].matrix[j][k] = Ker(Y).matrix[j][k];
+            }
+        }
         Y = times(Y, Y);
     }
     return S;
+}
+
+Matrix projection(Matrix B)
+{
+    printf("yana\n");
+    Matrix E, Z;
+    E = unit(B.m);
+    Z =minus(E, times(B, times(gauss_jordan(times(dagger(B), B)), dagger(B))));
+    return Z;
+}
+
+Matrix Im(Matrix X)
+{
+    Matrix b, B, Y;
+    Y = echelon_form(X);
+    B = (Matrix){0, 0};
+    b = (Matrix){Y.m, 1};
+    b.matrix = initialize_matrix(b.m, b.n);
+    int temp[range(X)];
+    int i, j, k, row;
+
+    row = 0;
+
+    for (i = 0; i < range(X); i++) {
+        temp[i] = -1;
+    }
+
+    for (j = 0; j < Y.n; j++) {    
+        for (i = row; i < Y.m; i++) {
+            if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+                temp[j] = i;
+                row += 1;
+                break;
+            }
+        }
+    }
+
+    for (j = 0; j < Y.n; j++) {
+        if (temp[j] != -1) {
+            for (i = 0; i < Y.m; i++) {
+                b.matrix[i][0] = Y.matrix[i][j];
+            }
+            B = joint(B, b);
+        }
+    }
+    return B;
+}
+
+Spaces complement(Spaces S)
+{
+    int i, j, k;
+    Matrix P, W;
+    Spaces T = {S.n};
+    T.spaces = malloc(sizeof(Matrix) * S.n);
+    for (i = 0; i < S.n; i++) {
+        P = projection(S.spaces[i]);
+        W = Im(P);
+        T.spaces[i] = (Matrix){W.m, W.n};
+        T.spaces[i].matrix = initialize_matrix(W.m, W.n);
+        for (j = 0; j < W.m; j++) {
+            for (k = 0; k < W.n; k++) {
+                T.spaces[i].matrix[j][k] = W.matrix[j][k];
+            }
+        }
+    }
+    return T;
+
 }
 
 void show_matrix(Matrix X)
@@ -595,16 +669,8 @@ void show_spaces(Spaces S)
 {
     int i, j, k;
     for (i = 0; i < S.n; i++) {
-        for (j = 0; j < S.spaces[i].m; j++) {
-            for (k = 0; k < S.spaces[i].n; k++) {
-                show_complex(S.spaces[i].matrix[j][k]);
-                if (k == S.spaces[i].n - 1) {
-                    printf("\n");
-                } else {
-                    printf(" ");
-                }
-            }
-        }
+        printf("space number: %d--------------------------------------------------\n", i + 1);
+        show_matrix(S.spaces[i]);
         printf("--------------------------------------------------\n");
     }
 }
