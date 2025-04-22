@@ -449,7 +449,7 @@ Matrix echelon_form(Matrix X)
     for (i = 0; i < Z.n; i++) {
         if (Z.matrix[row][i].x == 0 && Z.matrix[row][i].y == 0) {
             for (j = row; j < Z.m; j++) {
-                if (!(fabsf(Z.matrix[j][i].x) < THRESHOLD) || !(fabsf(Z.matrix[j][i].y) < THRESHOLD)) {
+                if (Z.matrix[j][i].x != 0 || Z.matrix[j][i].y != 0) {
                     Complex *temp = malloc(sizeof(Complex) * Z.n);
                     for (k = 0; k < Z.n; k++) {
                         temp[k] = Z.matrix[row][k];
@@ -586,7 +586,6 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
 
 Matrix projection(Matrix B)
 {
-    printf("yana\n");
     Matrix E, Z;
     E = unit(B.m);
     Z =minus(E, times(B, times(gauss_jordan(times(dagger(B), B)), dagger(B))));

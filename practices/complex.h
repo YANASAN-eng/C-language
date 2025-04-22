@@ -26,7 +26,6 @@ double complex_norm(Complex);
 Complex complex_scalar(double a, Complex z);
 // 逆数
 Complex complex_reciprocal(Complex c);
-// 零
-Complex complex_zero_threshold(Complex z);
 void show_complex(Complex);
+
 #endif
