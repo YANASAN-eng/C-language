@@ -66,9 +66,15 @@ Matrix times(Matrix X, Matrix Y)
 
 Matrix scalar(Complex a, Matrix X)
 {
-    Matrix Z = X;
+    Matrix Z = {X.m, X.n};
+    Z.matrix = initialize_matrix(Z.m, Z.n);
     int i,j;
 
+    for (i = 0; i < Z.m; i++) {
+        for (j = 0; j < Z.n; j++) {
+            Z.matrix[i][j] = X.matrix[i][j];
+        }
+    }
     for (i = 0; i < Z.m; i++) {
         for (j = 0; j < Z.n; j++) {
             Z.matrix[i][j] = complex_times(a, Z.matrix[i][j]);
@@ -140,11 +146,19 @@ Matrix joint(Matrix X, Matrix Y)
     } else if (X.m != 0 && X.n != 0 && Y.m == 0 && Y.n == 0){
         Z = (Matrix){X.m, X.n};
         Z.matrix = initialize_matrix(Z.m, Z.n);
-        Z = X;
+        for (i = 0; i < Z.m; i++) {
+            for (j = 0; j < Z.n; j++) {
+                Z.matrix[i][j] = X.matrix[i][j];
+            }
+        }
     } else if (X.m == 0 && X.n == 0 && Y.m != 0 && Y.n != 0) {
         Z = (Matrix){Y.m, Y.n};
         Z.matrix = initialize_matrix(Z.m, Z.n);
-        Z = Y;
+        for (i = 0; i < Z.m; i++) {
+            for (j = 0; j < Z.n; j++) {
+                Z.matrix[i][j] = Y.matrix[i][j];
+            }
+        }
     }
 
     return Z;
@@ -328,13 +342,20 @@ Matrix House(Matrix X)
 
 Matrix QR(Matrix X)
 {
-    Matrix R = X;
+    Matrix R = {X.m, X.n};
     Matrix H = unit(X.m);
     Matrix Temp = {X.m, X.n};
     Temp.matrix = initialize_matrix(Temp.m, Temp.n);
     Matrix E;
     
     int i,j;
+
+    R.matrix = initialize_matrix(R.m, R.n);
+    for (i = 0; i < R.m; i++) {
+        for (j = 0; j < R.n; j++) {
+            R.matrix[i][j] = X.matrix[i][j];
+        }
+    }
 
     for (i = 0; i < X.m - 1; i++) {
         Matrix temp0 = {X.m - i, 1};
@@ -373,9 +394,15 @@ Matrix QR_repeat(Matrix X, int n)
     Q.matrix = initialize_matrix(Q.m, Q.n);
     Matrix R = {X.m, X.n};
     R.matrix = initialize_matrix(R.m, R.n);
-    Matrix Y = X;
+    Matrix Y = {X.m, X.n};
+    Y.matrix = initialize_matrix(Y.m, Y.n);
     Matrix Temp_QR;
     int i, j, k;
+    for (i = 0; i < Y.m; i++) {
+        for (j = 0; j < Y.n; j++) {
+            Y.matrix[i][j] = X.matrix[i][j];
+        }
+    }
     for (i = 0; i < n; i++) {
         Temp_QR = QR(Y);
         for (j = 0; j < Temp_QR.m; j++) {
@@ -404,13 +431,21 @@ int range(Matrix X)
 
 Matrix echelon_form(Matrix X)
 {
-    Matrix Z = X;
+    Matrix Z = { X.m, X.n };
+    Z.matrix = initialize_matrix(Z.m, Z.n);
+
     int delta = 0; 
     bool flag = true;
     int r = range(X);
 
     int i,j,k;
-    for (i = 0; i < r; i++) {
+    for (i = 0; i < X.m; i++) {
+        for (j = 0; j < X.n; j++) {
+            Z.matrix[i][j] = X.matrix[i][j];
+        }
+    }
+
+    for (i = 0; i < r - 1; i++) {
         if (Z.matrix[i - delta][i].x == 0 && Z.matrix[i - delta][i].y == 0) {
             for (j = i + 1 - delta; j < Z.m; j++) {
                 if (Z.matrix[j][i].x != 0 || Z.matrix[j][i].y != 0) {
@@ -494,6 +529,54 @@ Matrix Ker(Matrix X)
     return B;
 }
 
+Matrix eigenspace(Matrix X, Complex lambda)
+{
+    Matrix B = Ker(minus(X, scalar(lambda ,unit(X.m))));
+    return B;
+}
+
+Spaces general_eigenspace(Matrix X, Complex lambda)
+{
+    int N = 0;
+    bool flag = false;
+    Matrix Y = minus(X, scalar(lambda, unit(X.m)));
+    int i,j;
+    for (i = 0; i < Y.m; i++) {
+        for (j = 0; j < Y.n; j++) {
+            if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+                flag = true;
+                break;
+            }
+        }
+    }
+    show_matrix(Y);
+    printf("--------------------------------------------------\n");
+    while(flag && N < X.m) {
+        flag = false;
+        Y = times(Y, Y);
+        show_matrix(Y);
+        printf("--------------------------------------------------\n");
+        N += 1;
+        for (i = 0; i < Y.m; i++) {
+            for (j = 0; j < Y.n; j++) {
+                if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+                    flag = true;
+                    break;
+                }
+            }
+        }
+    }
+    Spaces S = {N - 1};
+    S.spaces = malloc(sizeof(Matrix) * (N -1));
+
+    Y = minus(X, scalar(lambda ,unit(X.m)));
+    for (i = 0; i < N - 1; i++) {
+        S.spaces[i] = Ker(Y);
+        Y = times(Y, Y);
+    }
+    return S;
+}
+
 void show_matrix(Matrix X)
 {
     int i, j;
@@ -505,5 +588,23 @@ void show_matrix(Matrix X)
                 printf("\n");
             }
         }
+    }
+}
+
+void show_spaces(Spaces S)
+{
+    int i, j, k;
+    for (i = 0; i < S.n; i++) {
+        for (j = 0; j < S.spaces[i].m; j++) {
+            for (k = 0; k < S.spaces[i].n; k++) {
+                show_complex(S.spaces[i].matrix[j][k]);
+                if (k == S.spaces[i].n - 1) {
+                    printf("\n");
+                } else {
+                    printf(" ");
+                }
+            }
+        }
+        printf("--------------------------------------------------\n");
     }
 }

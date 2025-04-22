@@ -5,7 +5,7 @@
 
 int main()
 {
-    Matrix X = {4, 3};
+    Matrix X = {3, 3};
     Matrix H;
     
     X.matrix = initialize_matrix(X.m, X.n);
@@ -19,9 +19,6 @@ int main()
     X.matrix[2][0] = (Complex){-1, 0};
     X.matrix[2][1] = (Complex){-1, 0};
     X.matrix[2][2] = (Complex){-2, 0};
-    X.matrix[3][0] = (Complex){3, 0};
-    X.matrix[3][1] = (Complex){0, 0};
-    X.matrix[3][2] = (Complex){6, 0};
 
     // Matrix Test = QR(X);
 
@@ -48,10 +45,14 @@ int main()
     // printf("--------------------------------------------------\n");
     // show_matrix(House(X));
     // printf("--------------------------------------------------\n");
-    // show_matrix(QR_repeat(X, 1000));
+    show_matrix(QR_repeat(X, 100));
     printf("--------------------------------------------------\n");
-    show_matrix(echelon_form(X));
-    printf("--------------------------------------------------\n");
-    show_matrix(Ker(X));
+    // show_matrix(echelon_form(X));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(Ker(X));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(X);
+    // printf("--------------------------------------------------\n");
+    show_spaces(general_eigenspace(X, (Complex){3, 0}));
     return 0;
 }

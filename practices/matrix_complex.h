@@ -13,6 +13,11 @@ typedef struct Matrix {
     Complex **matrix;
 } Matrix;
 
+typedef struct Spaces {
+    int n;
+    Matrix *spaces;
+} Spaces;
+
 Complex** initialize_matrix(int m, int n);
 Matrix add(Matrix X, Matrix Y);
 Matrix minus(Matrix X, Matrix Y);
@@ -31,6 +36,8 @@ Matrix QR_repeat(Matrix X, int n);
 Matrix dagger(Matrix X);
 Matrix echelon_form(Matrix X);
 Matrix Ker(Matrix X);
+Matrix eigenspace(Matrix X, Complex lambda);
+Spaces general_eigenspace(Matrix X, Complex lambda);
 Complex inner(Matrix X, Matrix Y);
 Complex det(Matrix X);
 Complex tr(Matrix X);
@@ -38,5 +45,6 @@ Complex norm(Matrix X);
 int range(Matrix X);
 
 void show_matrix(Matrix X);
+void show_spaces(Spaces S);
 
 #endif
