@@ -52,11 +52,11 @@ int main()
     // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(X);
+    // printf("--------------------------------------------------\n");
+    // show_matrix(Ker(X));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(projection(Ker(X)));
     printf("--------------------------------------------------\n");
-    show_matrix(Ker(X));
-    printf("--------------------------------------------------\n");
-    show_matrix(projection(Ker(X)));
-    printf("--------------------------------------------------\n");
-    show_matrix(echelon_form(projection(Ker(X))));
+    show_matrix(Im(projection(Ker(X))));
     return 0;
 }

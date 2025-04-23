@@ -599,29 +599,29 @@ Matrix Im(Matrix X)
     B = (Matrix){0, 0};
     b = (Matrix){Y.m, 1};
     b.matrix = initialize_matrix(b.m, b.n);
-    int temp[range(X)];
+    int temp[Y.n];
     int i, j, k, row;
 
     row = 0;
 
-    for (i = 0; i < range(X); i++) {
+    for (i = 0; i < Y.n; i++) {
         temp[i] = -1;
     }
 
     for (j = 0; j < Y.n; j++) {    
-        for (i = row; i < Y.m; i++) {
-            if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
-                temp[j] = i;
-                row += 1;
-                break;
-            }
+        if (THRESHOLD < fabsf(Y.matrix[row][j].x)  || THRESHOLD < fabsf(Y.matrix[row][j].y)) {
+            printf("aaaaaaaaa\n");
+            temp[j] = row;
+            row += 1;
+            break;
         }
     }
 
     for (j = 0; j < Y.n; j++) {
         if (temp[j] != -1) {
+            printf("%d\n", temp[j]);
             for (i = 0; i < Y.m; i++) {
-                b.matrix[i][0] = Y.matrix[i][j];
+                b.matrix[i][0] = Y.matrix[i][temp[j]];
             }
             B = joint(B, b);
         }
