@@ -618,7 +618,6 @@ Matrix Im(Matrix X)
 
     for (j = 0; j < Y.n; j++) {
         if (temp[j] != -1) {
-            printf("%d\n", temp[j]);
             for (i = 0; i < Y.m; i++) {
                 b.matrix[i][0] = Y.matrix[i][temp[j]];
             }
