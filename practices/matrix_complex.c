@@ -610,7 +610,6 @@ Matrix Im(Matrix X)
 
     for (j = 0; j < Y.n; j++) {    
         if (THRESHOLD < fabsf(Y.matrix[row][j].x)  || THRESHOLD < fabsf(Y.matrix[row][j].y)) {
-            printf("aaaaaaaaa\n");
             temp[j] = row;
             row += 1;
             break;
