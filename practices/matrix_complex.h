@@ -39,6 +39,7 @@ Matrix Ker(Matrix X);
 Matrix eigenspace(Matrix X, Complex lambda);
 Matrix projection(Matrix B);
 Matrix Im(Matrix X);
+Matrix independent(Matrix B1, Matrix B2);
 Spaces complement(Spaces S);
 Spaces general_eigenspace(Matrix X, Complex lambda);
 Complex inner(Matrix X, Matrix Y);
@@ -46,6 +47,7 @@ Complex det(Matrix X);
 Complex tr(Matrix X);
 Complex norm(Matrix X);
 int range(Matrix X);
+int rank(Matrix X);
 void show_matrix(Matrix X);
 void show_spaces(Spaces S);
 

@@ -6,7 +6,6 @@
 int main()
 {
     Matrix X = {3, 3};
-    Matrix H;
     
     X.matrix = initialize_matrix(X.m, X.n);
 
@@ -19,6 +18,8 @@ int main()
     X.matrix[2][0] = (Complex){1, 0};
     X.matrix[2][1] = (Complex){2, 0};
     X.matrix[2][2] = (Complex){-3, 0};
+
+    // show_matrix(X);
 
     // Matrix Test = QR(X);
 
@@ -55,8 +56,18 @@ int main()
     // printf("--------------------------------------------------\n");
     // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
+    // show_matrix(Ker(times(X, X)));
+    // printf("--------------------------------------------------\n");
     // show_matrix(projection(Ker(X)));
     printf("--------------------------------------------------\n");
-    show_matrix(Im(projection(Ker(X))));
+    show_matrix(Im(echelon_form(projection(Ker(X)))));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(Ker(times(X, X)));
+    // printf("--------------------------------------------------\n");
+    // Matrix* S = malloc(sizeof(Matrix) * 1);
+    // S[0] = Ker(X);
+    // printf("--------------------------------------------------\n");
+    // show_matrix(independent(Im(complement((Spaces){1, S}).spaces[0]), Ker(times(X, X))));
+    // show_matrix(Im(complement((Spaces){1, S}).spaces[0]));
     return 0;
 }

@@ -597,7 +597,7 @@ Matrix Im(Matrix X)
     Matrix b, B, Y;
     Y = echelon_form(X);
     B = (Matrix){0, 0};
-    b = (Matrix){Y.m, 1};
+    b = (Matrix){Y.n, 1};
     b.matrix = initialize_matrix(b.m, b.n);
     int temp[Y.n];
     int i, j, k, row;
@@ -618,13 +618,17 @@ Matrix Im(Matrix X)
 
     for (j = 0; j < Y.n; j++) {
         if (temp[j] != -1) {
-            for (i = 0; i < Y.m; i++) {
-                b.matrix[i][0] = Y.matrix[i][temp[j]];
+            for (i = 0; i < Y.n; i++) {
+                b.matrix[i][0] = Y.matrix[temp[j]][i];
             }
             B = joint(B, b);
         }
     }
     return B;
+}
+
+int rank(Matrix X) {
+    return Im(X).n;
 }
 
 Spaces complement(Spaces S)
@@ -645,7 +649,41 @@ Spaces complement(Spaces S)
         }
     }
     return T;
+}
 
+Matrix independent(Matrix B1, Matrix B2)
+{
+    int i, j, k, l;
+    Matrix B = {0, 0};
+    Matrix* b1 = malloc(sizeof(Matrix) * B1.n);
+    Matrix b2 = {B2.m, 1};
+    b2.matrix = initialize_matrix(B1.m, 1);
+
+    Complex coefficient;
+
+    for (j = 0; j < B1.n; j++) {
+        b1[j] = (Matrix){B1.m, 1};
+        b1[j].matrix = initialize_matrix(B1.m, 1);
+        for (i = 0; i < B1.m; i++) { 
+            b1[j].matrix[i][0] = B1.matrix[i][j];
+        }
+    }
+
+    for (i = 0; i < B2.n; i++) {
+        coefficient = (Complex){0, 0};
+        for (j = 0; j < B2.m; j++) {
+            b2.matrix[j][0] = B2.matrix[j][i];
+        }
+        for (j = 0; j < B1.n; j++) {
+            coefficient = complex_div(inner(b2, b1[j]), inner(b1[j], b1[j]));
+            b2 = minus(b2, scalar(coefficient, b1[j]));
+        }
+        if (THRESHOLD < fabsf(norm(b2).x) || THRESHOLD < fabsf(norm(b2).y)) {
+            B = joint(B, b2);
+            show_matrix(b2);
+        }
+    }
+    return B;
 }
 
 void show_matrix(Matrix X)
