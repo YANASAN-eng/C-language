@@ -9,17 +9,17 @@ int main()
     
     X.matrix = initialize_matrix(X.m, X.n);
 
-    X.matrix[0][0] = (Complex){1, 0};
-    X.matrix[0][1] = (Complex){2, 0};
-    X.matrix[0][2] = (Complex){-3, 0};
+    X.matrix[0][0] = (Complex){5, 0};
+    X.matrix[0][1] = (Complex){-1, 0};
+    X.matrix[0][2] = (Complex){-1, 0};
     X.matrix[1][0] = (Complex){1, 0};
     X.matrix[1][1] = (Complex){2, 0};
-    X.matrix[1][2] = (Complex){-3, 0};
-    X.matrix[2][0] = (Complex){1, 0};
-    X.matrix[2][1] = (Complex){2, 0};
-    X.matrix[2][2] = (Complex){-3, 0};
+    X.matrix[1][2] = (Complex){0, 0};
+    X.matrix[2][0] = (Complex){3, 0};
+    X.matrix[2][1] = (Complex){-1, 0};
+    X.matrix[2][2] = (Complex){1, 0};
 
-    // show_matrix(X);
+    show_matrix(X);
 
     // Matrix Test = QR(X);
 
@@ -53,15 +53,40 @@ int main()
     // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(X);
-    printf("--------------------------------------------------\n");
-    show_matrix(Ker(X));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(Ker(times(X, X)));
     // printf("--------------------------------------------------\n");
     // show_matrix(projection(Ker(X)));
     // printf("--------------------------------------------------\n");
     // show_matrix(Im(projection(Ker(X))));
-    printf("--------------------------------------------------\n");
-    show_matrix(differentialspace(Im(projection(Ker(X))), Ker(times(X, X))));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(common_space(Im(projection(Ker(X))), Ker(times(X, X))));
+
+    show_spaces(general_eigenspace(X, (Complex){3, 0}));
+
+    Eigenvalues e;
+    e = eigenvalues(X);
+    show_eigenvalues(e);
+
+
+
+
+
+    Matrix Test = {3, 3};
+    Test.matrix = initialize_matrix(Test.m, Test.n);
+
+    Test.matrix[0][0] = (Complex){1, 0};
+    Test.matrix[0][1] = (Complex){0, 0};
+    Test.matrix[0][2] = (Complex){0, 0};
+    Test.matrix[1][0] = (Complex){1, 0};
+    Test.matrix[1][1] = (Complex){1, 0};
+    Test.matrix[1][2] = (Complex){-1, 0};
+    Test.matrix[2][0] = (Complex){1, 0};
+    Test.matrix[2][1] = (Complex){0, 0};
+    Test.matrix[2][2] = (Complex){1, 0};
+
+    show_matrix(times(times(gauss_jordan(Test), X), Test));
     return 0;
 }

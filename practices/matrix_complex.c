@@ -1,6 +1,8 @@
 #include "matrix_complex.h"
 
 #define THRESHOLD 1e-10
+#define epsilon 1e-3
+#define REPEAT 1000
 
 Complex** initialize_matrix(int m, int n)
 {
@@ -548,7 +550,7 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
     int i, j, k;
     for (i = 0; i < Y.m; i++) {
         for (j = 0; j < Y.n; j++) {
-            if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+            if (THRESHOLD < fabsf(Y.matrix[i][j].x) || THRESHOLD < fabsf(Y.matrix[i][j].y)) {
                 flag = true;
                 break;
             }
@@ -560,7 +562,7 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
         N += 1;
         for (i = 0; i < Y.m; i++) {
             for (j = 0; j < Y.n; j++) {
-                if (Y.matrix[i][j].x != 0 || Y.matrix[i][j].y != 0) {
+                if (THRESHOLD < fabsf(Y.matrix[i][j].x) || THRESHOLD < fabsf(Y.matrix[i][j].y)) {
                     flag = true;
                     break;
                 }
@@ -572,14 +574,12 @@ Spaces general_eigenspace(Matrix X, Complex lambda)
 
     Y = minus(X, scalar(lambda ,unit(X.m)));
     for (i = 0; i < N; i++) {
-        S.spaces[i] = (Matrix){Ker(Y).m, Ker(Y).n};
-        S.spaces[i].matrix = initialize_matrix(Ker(Y).m, Ker(Y).n);
-        for(j = 0; j < Ker(Y).m; j++) {
-            for (k = 0; k < Ker(Y).n; k++) {
-                S.spaces[i].matrix[j][k] = Ker(Y).matrix[j][k];
-            }
+        if (i == 0) {
+            S.spaces[i] = Ker(Y);
+        } else {
+            S.spaces[i] = common_space(Im(projection(Ker(Y))), Ker(times(X, Y)));
         }
-        Y = times(Y, Y);
+        Y = times(Y, X);
     }
     return S;
 }
@@ -651,16 +651,28 @@ Spaces complement(Spaces S)
     return T;
 }
 
-Matrix differentialspace(Matrix B1, Matrix B2)
+Matrix common_space(Matrix B1, Matrix B2)
 {
     Matrix B;
     B= times(gauss_jordan(B2), B1);
     return B;
 }
 
+Eigenvalues eigenvalues(Matrix X)
+{
+    Matrix Y = QR_repeat(X, REPEAT);
+    Eigenvalues e = {Y.m};
+    e.eigenvalues = malloc(sizeof(Complex) * Y.m);  
+    int i, j;
+    for (i = 0; i < Y.m; i++) {
+        e.eigenvalues[i] = Y.matrix[i][i];
+    }
+    return e;
+}
 void show_matrix(Matrix X)
 {
     int i, j;
+    printf("start representation of matrix->\n");
     for (i = 0; i < X.m; i++) {
         for (j = 0; j < X.n; j++) {
             show_complex(X.matrix[i][j]);
@@ -670,14 +682,27 @@ void show_matrix(Matrix X)
             }
         }
     }
+    printf("<-end\n");
 }
 
 void show_spaces(Spaces S)
 {
     int i, j, k;
+    printf("start->\n");
     for (i = 0; i < S.n; i++) {
-        printf("space number: %d--------------------------------------------------\n", i + 1);
-        show_matrix(S.spaces[i]);
-        printf("--------------------------------------------------\n");
+        printf("space number: %d\n", i + 1);
+        show_matrix(S.spaces[i]); 
     }
+    printf("<-end\n");
+}
+
+void show_eigenvalues(Eigenvalues e)
+{
+    int i;
+    printf("eigen_values->\n");
+    for (i = 0; i < e.n; i++) {
+        show_complex(e.eigenvalues[i]);
+        printf("\n");
+    }
+    printf("<-end\n");
 }

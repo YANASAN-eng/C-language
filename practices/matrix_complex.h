@@ -7,18 +7,48 @@
 #include <stdbool.h>
 #include "complex.h"
 
+/**
+ * @brief structure for representing a Matrtix
+ *
+ */
 typedef struct Matrix {
-    int m;
-    int n;
-    Complex **matrix;
+    int m;      ///< row count
+    int n;      ///< column count
+    Complex **matrix;       ///< a complex matrix with two dimensions
 } Matrix;
 
+/**
+ * @brief structure for representing subspaces of given vector space. 
+ *
+ */
 typedef struct Spaces {
-    int n;
-    Matrix *spaces;
+    int n;      ///< number of space
+    Matrix *spaces;     ///< subspaces of given vector space 
 } Spaces;
 
+/**
+ * @brief structure for representing eigenvalues of a given matrix of representing a linear map
+ * 
+ */
+typedef struct Eigenvalues {
+    int n;      ///< number of eigenvalue
+    Complex *eigenvalues;       ///< eigenvalues of a given matrix
+} Eigenvalues;
+
+/**
+ * @brief initialization for a Matrix
+ *
+ * @param m row number of a matrix
+ * @param n column number of a matrix
+ * @return A pointer to the matrix data(Complex**) of resulting Matrix object.
+ */
 Complex** initialize_matrix(int m, int n);
+/**
+ * @brief sum for tow matrices
+ * @param X is a Matrix
+ * @param Y is a Matrix
+ * @return sum of X and Y
+ */
 Matrix add(Matrix X, Matrix Y);
 Matrix minus(Matrix X, Matrix Y);
 Matrix times(Matrix X, Matrix Y);
@@ -39,16 +69,18 @@ Matrix Ker(Matrix X);
 Matrix eigenspace(Matrix X, Complex lambda);
 Matrix projection(Matrix B);
 Matrix Im(Matrix X);
-Matrix differentialspace(Matrix B1, Matrix B2);
+Matrix common_space(Matrix B1, Matrix B2);
 Spaces complement(Spaces S);
 Spaces general_eigenspace(Matrix X, Complex lambda);
 Complex inner(Matrix X, Matrix Y);
 Complex det(Matrix X);
 Complex tr(Matrix X);
 Complex norm(Matrix X);
+Eigenvalues eigenvalues(Matrix X);
 int range(Matrix X);
 int rank(Matrix X);
 void show_matrix(Matrix X);
 void show_spaces(Spaces S);
+void show_eigenvalues(Eigenvalues lambda);
 
 #endif
