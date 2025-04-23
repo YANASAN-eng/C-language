@@ -545,25 +545,36 @@ Matrix eigenspace(Matrix X, Complex lambda)
 Spaces general_eigenspace(Matrix X, Complex lambda)
 {
     int N = 0;
-    bool flag = false;
+    bool flag1 = false;
+    bool flag2 = false;
     Matrix Y = minus(X, scalar(lambda, unit(X.m)));
     int i, j, k;
     for (i = 0; i < Y.m; i++) {
         for (j = 0; j < Y.n; j++) {
             if (THRESHOLD < fabsf(Y.matrix[i][j].x) || THRESHOLD < fabsf(Y.matrix[i][j].y)) {
-                flag = true;
+                flag1 = true;
+                flag2 = true;
                 break;
             }
         }
     }
-    while(flag && N < X.m) {
-        flag = false;
+    while(flag1 && flag2 && N < X.m) {
+        flag1 = false;
+        flag2 = false;
+        for (i = 0; i < Y.m; i++) {
+            for (j = 0; j < Y.n; j++) {
+                if (Y.matrix[i][j].x != times(Y, Y).matrix[i][j].x || Y.matrix[i][j].y != times(Y, Y).matrix[i][j].y) {
+                    flag1 = true;
+                    break;
+                }
+            }
+        }
         Y = times(Y, Y);
         N += 1;
         for (i = 0; i < Y.m; i++) {
             for (j = 0; j < Y.n; j++) {
                 if (THRESHOLD < fabsf(Y.matrix[i][j].x) || THRESHOLD < fabsf(Y.matrix[i][j].y)) {
-                    flag = true;
+                    flag2 = true;
                     break;
                 }
             }
