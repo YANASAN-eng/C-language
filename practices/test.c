@@ -53,21 +53,15 @@ int main()
     // show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(X);
-    // printf("--------------------------------------------------\n");
-    // show_matrix(Ker(X));
+    printf("--------------------------------------------------\n");
+    show_matrix(Ker(X));
     // printf("--------------------------------------------------\n");
     // show_matrix(Ker(times(X, X)));
     // printf("--------------------------------------------------\n");
     // show_matrix(projection(Ker(X)));
+    // printf("--------------------------------------------------\n");
+    // show_matrix(Im(projection(Ker(X))));
     printf("--------------------------------------------------\n");
-    show_matrix(Im(echelon_form(projection(Ker(X)))));
-    // printf("--------------------------------------------------\n");
-    // show_matrix(Ker(times(X, X)));
-    // printf("--------------------------------------------------\n");
-    // Matrix* S = malloc(sizeof(Matrix) * 1);
-    // S[0] = Ker(X);
-    // printf("--------------------------------------------------\n");
-    // show_matrix(independent(Im(complement((Spaces){1, S}).spaces[0]), Ker(times(X, X))));
-    // show_matrix(Im(complement((Spaces){1, S}).spaces[0]));
+    show_matrix(differentialspace(Im(projection(Ker(X))), Ker(times(X, X))));
     return 0;
 }

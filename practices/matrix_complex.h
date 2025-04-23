@@ -39,7 +39,7 @@ Matrix Ker(Matrix X);
 Matrix eigenspace(Matrix X, Complex lambda);
 Matrix projection(Matrix B);
 Matrix Im(Matrix X);
-Matrix independent(Matrix B1, Matrix B2);
+Matrix differentialspace(Matrix B1, Matrix B2);
 Spaces complement(Spaces S);
 Spaces general_eigenspace(Matrix X, Complex lambda);
 Complex inner(Matrix X, Matrix Y);

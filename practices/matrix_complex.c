@@ -651,38 +651,10 @@ Spaces complement(Spaces S)
     return T;
 }
 
-Matrix independent(Matrix B1, Matrix B2)
+Matrix differentialspace(Matrix B1, Matrix B2)
 {
-    int i, j, k, l;
-    Matrix B = {0, 0};
-    Matrix* b1 = malloc(sizeof(Matrix) * B1.n);
-    Matrix b2 = {B2.m, 1};
-    b2.matrix = initialize_matrix(B1.m, 1);
-
-    Complex coefficient;
-
-    for (j = 0; j < B1.n; j++) {
-        b1[j] = (Matrix){B1.m, 1};
-        b1[j].matrix = initialize_matrix(B1.m, 1);
-        for (i = 0; i < B1.m; i++) { 
-            b1[j].matrix[i][0] = B1.matrix[i][j];
-        }
-    }
-
-    for (i = 0; i < B2.n; i++) {
-        coefficient = (Complex){0, 0};
-        for (j = 0; j < B2.m; j++) {
-            b2.matrix[j][0] = B2.matrix[j][i];
-        }
-        for (j = 0; j < B1.n; j++) {
-            coefficient = complex_div(inner(b2, b1[j]), inner(b1[j], b1[j]));
-            b2 = minus(b2, scalar(coefficient, b1[j]));
-        }
-        if (THRESHOLD < fabsf(norm(b2).x) || THRESHOLD < fabsf(norm(b2).y)) {
-            B = joint(B, b2);
-            show_matrix(b2);
-        }
-    }
+    Matrix B;
+    B= times(gauss_jordan(B2), B1);
     return B;
 }
 
