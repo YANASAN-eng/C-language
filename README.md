@@ -45,6 +45,6 @@ localにcloneして使用して頂く事を目的に書かれています。
 #### Gosperの方法
 + Goper変換
 
-#references
+## references
 + http://ps.eei.eng.osaka-u.ac.jp/funaki/notes/class/h29/H29-numeana-9.pdf
 + https://www.bing.com/search?q=Gosper+algorithm&FORM=AWRE
