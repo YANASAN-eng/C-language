@@ -123,15 +123,16 @@ Polynomial poly_remainder(Polynomial p, Polynomial q)
     if (p.deg < q.deg) {
         return q;
     } else {
-        int deg = p.deg - q.deg;
+        int deg;
         Polynomial P, Q, R;
         P = p;
         Q = q;
         int i;
         Complex temp;
         while (P.deg >= Q.deg) {
+            deg = P.deg - Q.deg;
             for (i = 1; i < Q.deg + 1; i++) {
-                temp = complex_minus(P.coefficients[deg - i], complex_times(complex_div(P.coefficients[P.deg], Q.coefficients[Q.deg]), Q.coefficients[Q.deg - i]));
+                temp = complex_minus(P.coefficients[P.deg - i], complex_times(complex_div(P.coefficients[P.deg], Q.coefficients[Q.deg]), Q.coefficients[Q.deg - i]));
                 if (temp.x != 0 || temp.y != 0) {
                     break;
                 }
@@ -147,7 +148,7 @@ Polynomial poly_remainder(Polynomial p, Polynomial q)
             }
             P = R;
         }
-        return R;
+        return P;
     }
 }
 
@@ -156,13 +157,22 @@ Polynomial Euclid(Polynomial p, Polynomial q)
     Polynomial P, Q, Temp;
     P = p;
     Q = q;
-    Temp = (Polynomial){0};
-    while (poly_remainder(P, Q).deg >= 0 || poly_remainder(P, Q).coefficients[0].x != 0 || poly_remainder(P, Q).coefficients[0].y != 0) {
+    if (P.deg < Q.deg) {
+        Temp = P;
+        P = Q;
+        Q = Temp;
+    }
+    
+    while (poly_remainder(P, Q).deg >= 0) {
         Temp = Q;
         Q = poly_remainder(P, Q);
         P = Temp;
     }
-    return Q;
+    if (Q.coefficients[0].x == 0 && Q.coefficients[0].y == 0) {
+        return P;
+    } else {
+        return Q;
+    }
 }
 
 Focuspolynomial max_degree(Polynomial p, Polynomial q)
