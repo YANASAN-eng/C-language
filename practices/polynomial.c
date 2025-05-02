@@ -128,7 +128,6 @@ Polynomial poly_remainder(Polynomial p, Polynomial q)
         P = p;
         Q = q;
         int i;
-        int count = 0;
         Complex temp;
         while (P.deg >= Q.deg) {
             for (i = 1; i < Q.deg + 1; i++) {
@@ -146,11 +145,24 @@ Polynomial poly_remainder(Polynomial p, Polynomial q)
                     R.coefficients[i] = complex_minus(P.coefficients[i], complex_times(complex_div(P.coefficients[P.deg], Q.coefficients[Q.deg]), Q.coefficients[i- P.deg + Q.deg]));
                 }
             }
-            count += 1;
             P = R;
         }
         return R;
     }
+}
+
+Polynomial Euclid(Polynomial p, Polynomial q)
+{
+    Polynomial P, Q, Temp;
+    P = p;
+    Q = q;
+    Temp = (Polynomial){0};
+    while (poly_remainder(P, Q).deg >= 0 || poly_remainder(P, Q).coefficients[0].x != 0 || poly_remainder(P, Q).coefficients[0].y != 0) {
+        Temp = Q;
+        Q = poly_remainder(P, Q);
+        P = Temp;
+    }
+    return Q;
 }
 
 Focuspolynomial max_degree(Polynomial p, Polynomial q)
@@ -193,8 +205,11 @@ void show_polynomial(Polynomial p)
             if (p.coefficients[i].y < 0) {
                 printf("(%f-i%f)\n", p.coefficients[i].x, -p.coefficients[i].y);
             } else {
-                printf("%f+i%f\n", p.coefficients[i].x, p.coefficients[i].y);
+                printf("(%f+i%f)\n", p.coefficients[i].x, p.coefficients[i].y);
             }
         }
+    }
+    if (p.deg < 0) {
+        printf("0\n");
     }
 } 
