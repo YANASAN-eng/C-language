@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include "complex.h"
+#include "functions.h"
 
 typedef struct Polynomial {
     int deg;
@@ -21,6 +22,7 @@ Polynomial poly_times(Polynomial p, Polynomial q);
 Polynomial Euclid(Polynomial p, Polynomial q);
 Polynomial poly_div(Polynomial p, Polynomial q);
 Polynomial poly_remainder(Polynomial p, Polynomial q);
+Polynomial poly_shift(Polynomial p, int N);
 Focuspolynomial max_degree(Polynomial p, Polynomial q);
 Focuspolynomial min_degree(Polynomial p, Polynomial q);
 void show_polynomial(Polynomial p);

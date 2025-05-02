@@ -175,6 +175,23 @@ Polynomial Euclid(Polynomial p, Polynomial q)
     }
 }
 
+Polynomial poly_shift(Polynomial p, int N)
+{
+    Polynomial q;
+    q.deg = p.deg;
+    q.coefficients = malloc(sizeof(Complex) * (q.deg + 1));
+    int i, j;
+    Complex temp;
+    for (i = 0; i < q.deg + 1; i++) {
+        temp = (Complex){0, 0};
+        for (j = i; j < q.deg + 1; j++) {
+            temp = complex_add(temp, complex_times(p.coefficients[j], complex_scalar(combination(j, i), complex_power((Complex){N, 0}, j - i))));
+        }
+        q.coefficients[i] = temp;
+    }
+    return q;
+}
+
 Focuspolynomial max_degree(Polynomial p, Polynomial q)
 {
     Focuspolynomial fp;

@@ -34,6 +34,15 @@ localにcloneして使用して頂く事を目的に書かれています。
 + 行列表示
 + 部分空間の表示
 + 固有値表示
-
+#### 多項式
+-----演算部分-----
++ 四則演算
++ 最大公約数
++ シフト演算
+-----表示部分-----
++ 多項式表示
+#### Gosperの方法
++ Goper変換
 #references
 + http://ps.eei.eng.osaka-u.ac.jp/funaki/notes/class/h29/H29-numeana-9.pdf
++ https://www.bing.com/search?q=Gosper+algorithm&FORM=AWRE
