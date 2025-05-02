@@ -1,14 +1,5 @@
 #include "complex.h"
 
-#define THRESHOLD 1e-10
-
-Complex complex_zero_threshold(Complex z) {
-    if (fabsf(z.x) < THRESHOLD && fabsf(z.y) < THRESHOLD) {
-        return (Complex){0, 0};
-    }
-    return z;
-}
-
 // 和
 Complex complex_add(Complex z1, Complex z2)
 {
@@ -54,7 +45,7 @@ Complex complex_div(Complex z1, Complex z2)
     w.x = w.x / (complex_norm(z2) * complex_norm(z2));
     w.y = w.y / (complex_norm(z2) * complex_norm(z2));
 
-    return complex_zero_threshold(complex_times(z1, w));
+    return complex_times(z1, w);
 }
 // スカラー倍
 Complex complex_scalar(double a, Complex z)
@@ -70,7 +61,23 @@ Complex complex_reciprocal(Complex z)
 {
     Complex w = {0, 0};
     w = complex_scalar(1/ (complex_norm(z) * complex_norm(z)), complex_conjugate(z));
-    return complex_zero_threshold(w);
+    return w;
+}
+Complex complex_sqrt(Complex z)
+{
+    Complex w = {0, 0};
+    w.x = sqrt(z.x + sqrt(z.x * z.x + z.y * z.y) / 2);
+    w.y = sqrt(z.y + sqrt(z.x * z.x + z.y * z.y) / 2);
+    return w;
+}
+Complex complex_power(Complex z, int n)
+{
+    Complex w = {1, 0};
+    int i;
+    for (i = 0; i < n; i++) {
+        w = complex_times(w, z);
+    }
+    return w;
 }
 // 表示する。
 void show_complex(Complex z)

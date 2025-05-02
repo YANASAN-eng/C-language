@@ -27,5 +27,9 @@ Complex complex_scalar(double a, Complex z);
 // 逆数
 Complex complex_reciprocal(Complex c);
 void show_complex(Complex);
+// ルート
+Complex complex_sqrt(Complex z);
+// べき
+Complex complex_power(Complex z, int n);
 
 #endif
