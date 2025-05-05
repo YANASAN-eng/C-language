@@ -2,7 +2,7 @@
 #define GOSPER_H_
 
 #include "complex.h"
-#include "matrix.h"
+#include "matrix_complex.h"
 #include "polynomial.h"
 
 typedef struct Polynomials {
@@ -10,8 +10,10 @@ typedef struct Polynomials {
     Polynomial* polynomials;
 } Polynomials;
 
-Polynomials gosper(Polynomial f, Polynomial g);
-Polynomials gosper_equation(Polynomial p, Polynomial q, Polynomial r);
+Polynomials gosper_transformation(Polynomial f, Polynomial g);
+Polynomial gosper_equation(Polynomials polys);
+Matrix poly_matrix(Polynomial p, int m, int n);
+Matrix shift_matrix(int d, int N);
 
 void show_gosper(Polynomials polys);
 #endif
